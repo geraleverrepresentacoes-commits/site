@@ -90,7 +90,7 @@
 
       const loading = append("Buscando informações...", "loading");
 
-      fetch("?query=" + encodeURIComponent(query))
+      fetch("https://script.google.com/macros/s/AKfycby_7t2dEN0TQJ0bMCUUjOjYfhCeNymoaWKOqRFP2Eq8ohQqa3nEjX3U1A3N84pywnOP/exec?query=" + encodeURIComponent(query))
         .then(res => res.json())
         .then(data => {
           loading.remove();
