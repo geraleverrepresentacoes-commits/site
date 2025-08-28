@@ -3,52 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search - Assistente Virtual</title>
+  <title>Busca de Produtos e Serviços</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f4f4f4; }
-    #chat-container { max-width: 500px; margin: 20px auto; border: 1px solid #ddd; border-radius: 10px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1 ); display: flex; flex-direction: column; height: 80vh; }
-    #chat-header { background: #007BFF; color: white; padding: 15px; border-top-left-radius: 10px; border-top-right-radius: 10px; text-align: center; }
-    #chat-header h2 { margin: 0; font-size: 1.2em; }
-    #chat-display { flex-grow: 1; padding: 15px; overflow-y: auto; }
-    #input-container { display: flex; padding: 10px; border-top: 1px solid #ddd; background-color: #f9f9f9; }
-    #input-field { flex-grow: 1; border: 1px solid #ccc; border-radius: 20px; padding: 10px 15px; font-size: 1em; resize: none; }
-    #send-button { background: #007BFF; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; margin-left: 10px; cursor: pointer; font-size: 1.5em; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      margin: 0; 
+      background-color: #f4f4f4; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #chat-container { 
+      width: 100%;
+      max-width: 600px; 
+      margin: 10px;
+      border: 1px solid #ddd; 
+      border-radius: 12px; 
+      background: white; 
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15); 
+      display: flex; 
+      flex-direction: column; 
+      height: 85vh; 
+    }
+    #chat-header { 
+      background: #007BFF; 
+      color: white; 
+      padding: 15px; 
+      border-top-left-radius: 12px; 
+      border-top-right-radius: 12px; 
+      text-align: center; 
+    }
+    #chat-header h2 { 
+      margin: 0; 
+      font-size: 1.2em; 
+    }
+    #chat-display { 
+      flex-grow: 1; 
+      padding: 15px; 
+      overflow-y: auto; 
+    }
+    #input-container { 
+      display: flex; 
+      padding: 10px; 
+      border-top: 1px solid #ddd; 
+      background-color: #f9f9f9; 
+    }
+    #input-field { 
+      flex-grow: 1; 
+      border: 1px solid #ccc; 
+      border-radius: 20px; 
+      padding: 10px 15px; 
+      font-size: 1em; 
+      resize: none; 
+    }
+    #send-button { 
+      background: #007BFF; 
+      color: white; 
+      border: none; 
+      border-radius: 50%; 
+      width: 45px; 
+      height: 45px; 
+      margin-left: 10px; 
+      cursor: pointer; 
+      font-size: 1.5em; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: background-color 0.2s; 
+    }
     #send-button:hover { background: #0056b3; }
     #send-button:disabled { background: #999; cursor: not-allowed; }
     .message { margin-bottom: 15px; display: flex; }
     .user-message { justify-content: flex-end; }
     .bot-message { justify-content: flex-start; }
-    .message p { display: inline-block; padding: 10px 15px; border-radius: 18px; max-width: 85%; line-height: 1.4; }
+    .message p { 
+      display: inline-block; 
+      padding: 10px 15px; 
+      border-radius: 18px; 
+      max-width: 85%; 
+      line-height: 1.4; 
+      word-wrap: break-word;
+    }
     .user-message p { background: #007BFF; color: white; border-bottom-right-radius: 4px; }
     .bot-message p { background: #E9E9EB; color: #333; white-space: pre-wrap; border-bottom-left-radius: 4px; }
     .loading-indicator { text-align: center; color: #999; font-style: italic; }
+    @media (max-width: 600px) {
+      #chat-container {
+        height: 90vh;
+        margin: 5px;
+      }
+      #chat-header h2 {
+        font-size: 1em;
+      }
+    }
   </style>
 </head>
 <body>
 
   <div id="chat-container">
     <div id="chat-header">
-      <h2>Search - Assistente Virtual</h2>
+      <h2>Produtos e Serviços</h2>
     </div>
     <div id="chat-display">
-      <div class="message bot-message"><p>Olá! Como posso ajudar a encontrar informações sobre nossos produtos e serviços?</p></div>
+      <!-- mensagens aparecerão aqui -->
     </div>
     <div id="input-container">
-      <input type="text" id="input-field" placeholder="Digite sua pergunta...">
+      <input type="text" id="input-field" placeholder="Digite sua busca...">
       <button id="send-button" title="Enviar">➔</button>
     </div>
   </div>
 
   <script>
-    // URL do seu aplicativo web do Google. Já está preenchida.
+    // URL do seu aplicativo web do Google
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJMpe9ePz4K1uM0YjQWSZZwdZEIMrDEcdBUDMjB4M4AA3Ljf_z05jjWu_2SemrFZpR/exec"; 
 
-    const chatDisplay = document.getElementById("chat-display" );
+    const chatDisplay = document.getElementById("chat-display");
     const inputField = document.getElementById("input-field");
     const sendButton = document.getElementById("send-button");
 
     sendButton.addEventListener("click", sendMessage);
-    inputField.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); sendMessage(); } });
+    inputField.addEventListener("keypress", (e) => { 
+      if (e.key === "Enter") { 
+        e.preventDefault(); 
+        sendMessage(); 
+      } 
+    });
 
     function sendMessage() {
       const query = inputField.value.trim();
@@ -58,7 +138,6 @@
       inputField.value = "";
       setLoading(true);
 
-      // Usamos o método GET, passando a query como um parâmetro na URL
       fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
         .then(response => {
           if (!response.ok) {
@@ -71,7 +150,7 @@
         })
         .catch(error => {
           console.error('Erro ao contatar o backend:', error);
-          appendMessage("Desculpe, ocorreu um erro de comunicação. Por favor, tente novamente mais tarde.", "bot-message");
+          appendMessage("Desculpe, ocorreu um erro de comunicação. Tente novamente mais tarde.", "bot-message");
         })
         .finally(() => {
           setLoading(false);
@@ -82,12 +161,7 @@
       const messageDiv = document.createElement("div");
       messageDiv.className = `message ${className}`;
       const p = document.createElement("p");
-      
-      // Converte quebras de linha (\n) em   
- para formatação
-      p.innerHTML = text.replace(/\n/g, '  
-');
-
+      p.innerHTML = text.replace(/\n/g, '<br>');
       messageDiv.appendChild(p);
       chatDisplay.appendChild(messageDiv);
       chatDisplay.scrollTop = chatDisplay.scrollHeight;
