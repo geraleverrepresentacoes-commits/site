@@ -29,3 +29,168 @@
     #chat-header { 
       background: #007BFF; 
       color: white; 
+      padding: 15px; 
+      border-top-left-radius: 12px; 
+      border-top-right-radius: 12px; 
+      text-align: center; 
+    }
+    #chat-header h2 { 
+      margin: 0; 
+      font-size: 1.2em; 
+    }
+    #chat-display { 
+      flex-grow: 1; 
+      padding: 15px; 
+      overflow-y: auto; 
+    }
+    #input-container { 
+      display: flex; 
+      padding: 10px; 
+      border-top: 1px solid #ddd; 
+      background-color: #f9f9f9; 
+    }
+    #input-field { 
+      flex-grow: 1; 
+      border: 1px solid #ccc; 
+      border-radius: 20px; 
+      padding: 10px 15px; 
+      font-size: 1em; 
+      resize: none; 
+    }
+    #send-button { 
+      background: #007BFF; 
+      color: white; 
+      border: none; 
+      border-radius: 50%; 
+      width: 45px; 
+      height: 45px; 
+      margin-left: 10px; 
+      cursor: pointer; 
+      font-size: 1.5em; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: background-color 0.2s; 
+    }
+    #send-button:hover { background: #0056b3; }
+    #send-button:disabled { background: #999; cursor: not-allowed; }
+    .message { margin-bottom: 15px; display: flex; }
+    .user-message { justify-content: flex-end; }
+    .bot-message { justify-content: flex-start; }
+    .message p { 
+      display: inline-block; 
+      padding: 10px 15px; 
+      border-radius: 18px; 
+      max-width: 85%; 
+      line-height: 1.4; 
+      word-wrap: break-word;
+    }
+    .user-message p { background: #007BFF; color: white; border-bottom-right-radius: 4px; }
+    .bot-message p { background: #E9E9EB; color: #333; white-space: pre-wrap; border-bottom-left-radius: 4px; }
+    .loading-indicator { text-align: center; color: #999; font-style: italic; }
+    @media (max-width: 600px) {
+      #chat-container {
+        height: 90vh;
+        margin: 5px;
+      }
+      #chat-header h2 {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="chat-container">
+    <div id="chat-header">
+      <h2>Produtos e Serviços</h2>
+    </div>
+    <div id="chat-display">
+      <!-- As mensagens aparecerão aqui -->
+    </div>
+    <div id="input-container">
+      <input type="text" id="input-field" placeholder="Digite sua busca...">
+      <button id="send-button" title="Enviar">➔</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // URL do seu aplicativo web do Google (ATUALIZADA)
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvdMLrRSoctHaGK7vNiufyaKAQZ0PivqluLppPPHML-gBM0TqJjn03nOZdZNAEgByrDw/exec"; 
+
+      const chatDisplay = document.getElementById("chat-display" );
+      const inputField = document.getElementById("input-field");
+      const sendButton = document.getElementById("send-button");
+
+      appendMessage("Olá! Estou pronto para ajudar. O que você procura?", "bot-message");
+
+      sendButton.addEventListener("click", sendMessage);
+      inputField.addEventListener("keypress", (e) => { 
+        if (e.key === "Enter") { 
+          e.preventDefault(); 
+          sendMessage(); 
+        } 
+      });
+
+      function sendMessage() {
+        const query = inputField.value.trim();
+        if (!query) return;
+
+        appendMessage(query, "user-message");
+        inputField.value = "";
+        setLoading(true);
+
+        fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Erro na rede: ${response.statusText}`);
+            }
+            return response.text();
+          })
+          .then(text => {
+            const indicator = document.getElementById("loading");
+            if (indicator) indicator.remove();
+            
+            appendMessage(text, "bot-message");
+          })
+          .catch(error => {
+            console.error('Erro ao contatar o backend:', error);
+            const indicator = document.getElementById("loading");
+            if (indicator) indicator.remove();
+            appendMessage("Desculpe, ocorreu um erro de comunicação. Por favor, tente novamente mais tarde.", "bot-message");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+
+      function appendMessage(text, className) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${className}`;
+        const p = document.createElement("p");
+        p.innerHTML = text.replace(/\n/g, ' <br> ');
+        messageDiv.appendChild(p);
+        chatDisplay.appendChild(messageDiv);
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+      }
+
+      function setLoading(isLoading) {
+        sendButton.disabled = isLoading;
+        inputField.disabled = isLoading;
+        
+        if (isLoading) {
+          const indicator = document.createElement("div");
+          indicator.id = "loading";
+          indicator.className = "loading-indicator";
+          indicator.textContent = "Buscando...";
+          chatDisplay.appendChild(indicator);
+          chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
