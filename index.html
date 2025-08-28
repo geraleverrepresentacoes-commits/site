@@ -106,7 +106,7 @@
       <h2>Produtos e Serviços</h2>
     </div>
     <div id="chat-display">
-      <!-- mensagens aparecerão aqui -->
+      <!-- As mensagens aparecerão aqui -->
     </div>
     <div id="input-container">
       <input type="text" id="input-field" placeholder="Digite sua busca...">
@@ -115,78 +115,88 @@
   </div>
 
   <script>
-    // URL do seu aplicativo web do Google (ATUALIZADA)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNgVSU_pMAGy1BTW5YzitP5kaiGe0LBQiWwFSQPYB1uIVO6Ez2mimOjZc0_1IYm0eQ/exec"; 
+    // Espera o HTML da página estar completamente carregado antes de executar o script.
+    document.addEventListener("DOMContentLoaded", () => {
 
-    const chatDisplay = document.getElementById("chat-display" );
-    const inputField = document.getElementById("input-field");
-    const sendButton = document.getElementById("send-button");
+      // URL do seu aplicativo web do Google.
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNgVSU_pMAGy1BTW5YzitP5kaiGe0LBQiWwFSQPYB1uIVO6Ez2mimOjZc0_1IYm0eQ/exec"; 
 
-    sendButton.addEventListener("click", sendMessage);
-    inputField.addEventListener("keypress", (e) => { 
-      if (e.key === "Enter") { 
-        e.preventDefault(); 
-        sendMessage(); 
-      } 
-    });
+      const chatDisplay = document.getElementById("chat-display" );
+      const inputField = document.getElementById("input-field");
+      const sendButton = document.getElementById("send-button");
 
-    function sendMessage() {
-      const query = inputField.value.trim();
-      if (!query) return;
+      // Adiciona uma mensagem inicial para confirmar que o JS está funcionando.
+      appendMessage("Olá! Estou pronto para ajudar. O que você procura?", "bot-message");
 
-      appendMessage(query, "user-message");
-      inputField.value = "";
-      setLoading(true);
+      // Adiciona os "ouvintes" de eventos ao botão e ao campo de texto.
+      sendButton.addEventListener("click", sendMessage);
+      inputField.addEventListener("keypress", (e) => { 
+        if (e.key === "Enter") { 
+          e.preventDefault(); 
+          sendMessage(); 
+        } 
+      });
 
-      fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`Erro na rede: ${response.statusText}`);
-          }
-          return response.text();
-        })
-        .then(text => {
-          appendMessage(text, "bot-message");
-        })
-        .catch(error => {
-          console.error('Erro ao contatar o backend:', error);
-          appendMessage("Desculpe, ocorreu um erro de comunicação. Tente novamente mais tarde.", "bot-message");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+      function sendMessage() {
+        const query = inputField.value.trim();
+        if (!query) return;
 
-    function appendMessage(text, className) {
-      const messageDiv = document.createElement("div");
-      messageDiv.className = `message ${className}`;
-      const p = document.createElement("p");
-      p.innerHTML = text.replace(/\n/g, '  
+        appendMessage(query, "user-message");
+        inputField.value = "";
+        setLoading(true);
+
+        fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`Erro na rede: ${response.statusText}`);
+            }
+            return response.text();
+          })
+          .then(text => {
+            // Remove a mensagem de "Buscando..." antes de adicionar a resposta.
+            const indicator = document.getElementById("loading");
+            if (indicator) indicator.remove();
+            
+            appendMessage(text, "bot-message");
+          })
+          .catch(error => {
+            console.error('Erro ao contatar o backend:', error);
+            const indicator = document.getElementById("loading");
+            if (indicator) indicator.remove();
+            appendMessage("Desculpe, ocorreu um erro de comunicação. Por favor, tente novamente mais tarde.", "bot-message");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
+
+      function appendMessage(text, className) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${className}`;
+        const p = document.createElement("p");
+        // Substitui quebras de linha por   
+ para exibição correta no HTML.
+        p.innerHTML = text.replace(/\n/g, '  
 ');
-      messageDiv.appendChild(messageDiv);
-      chatDisplay.appendChild(messageDiv);
-      chatDisplay.scrollTop = chatDisplay.scrollHeight;
-    }
+        messageDiv.appendChild(p);
+        chatDisplay.appendChild(messageDiv);
+        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+      }
 
-    function setLoading(isLoading) {
-      sendButton.disabled = isLoading;
-      inputField.disabled = isLoading;
-      let indicator = document.getElementById("loading");
-      if (isLoading) {
-        if (!indicator) {
-          indicator = document.createElement("div");
+      function setLoading(isLoading) {
+        sendButton.disabled = isLoading;
+        inputField.disabled = isLoading;
+        
+        if (isLoading) {
+          const indicator = document.createElement("div");
           indicator.id = "loading";
           indicator.className = "loading-indicator";
           indicator.textContent = "Buscando...";
           chatDisplay.appendChild(indicator);
           chatDisplay.scrollTop = chatDisplay.scrollHeight;
         }
-      } else {
-        if (indicator) {
-          indicator.remove();
-        }
       }
-    }
+    });
   </script>
 
 </body>
