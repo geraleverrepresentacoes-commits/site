@@ -115,10 +115,10 @@
   </div>
 
   <script>
-    // URL do seu aplicativo web do Google
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJMpe9ePz4K1uM0YjQWSZZwdZEIMrDEcdBUDMjB4M4AA3Ljf_z05jjWu_2SemrFZpR/exec"; 
+    // URL do seu aplicativo web do Google (ATUALIZADA)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNgVSU_pMAGy1BTW5YzitP5kaiGe0LBQiWwFSQPYB1uIVO6Ez2mimOjZc0_1IYm0eQ/exec"; 
 
-    const chatDisplay = document.getElementById("chat-display");
+    const chatDisplay = document.getElementById("chat-display" );
     const inputField = document.getElementById("input-field");
     const sendButton = document.getElementById("send-button");
 
@@ -161,8 +161,9 @@
       const messageDiv = document.createElement("div");
       messageDiv.className = `message ${className}`;
       const p = document.createElement("p");
-      p.innerHTML = text.replace(/\n/g, '<br>');
-      messageDiv.appendChild(p);
+      p.innerHTML = text.replace(/\n/g, '  
+');
+      messageDiv.appendChild(messageDiv);
       chatDisplay.appendChild(messageDiv);
       chatDisplay.scrollTop = chatDisplay.scrollHeight;
     }
