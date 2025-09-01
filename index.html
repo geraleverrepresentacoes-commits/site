@@ -36,9 +36,7 @@
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      // URL CORRETA E VERIFICADA
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz37rsJnrtaZTcCgK809ACuLqQwPXl3YMlz6_zd9JN1XcYuOjpBkU1LFaxnuuKFXB5Y/exec"; 
-      
       const chatDisplay = document.getElementById("chat-display" );
       const inputField = document.getElementById("input-field");
       const sendButton = document.getElementById("send-button");
@@ -88,8 +86,6 @@
         const messageDiv = document.createElement("div");
         messageDiv.className = `message ${className}`;
         const p = document.createElement("p");
-        // CORREÇÃO: Substituindo a quebra de linha por   
- para formatação HTML
         p.innerHTML = text.replace(/\n/g, '  
 ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         messageDiv.appendChild(p);
