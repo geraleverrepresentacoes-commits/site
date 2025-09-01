@@ -86,8 +86,11 @@
         const messageDiv = document.createElement("div");
         messageDiv.className = `message ${className}`;
         const p = document.createElement("p");
+        
+        // A LINHA CORRIGIDA BASEADA NA SUA OBSERVAÇÃO
         p.innerHTML = text.replace(/\n/g, '  
 ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
         messageDiv.appendChild(p);
         chatDisplay.appendChild(messageDiv);
         chatDisplay.scrollTop = chatDisplay.scrollHeight;
