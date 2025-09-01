@@ -36,7 +36,9 @@
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      // URL CORRETA E VERIFICADA
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz37rsJnrtaZTcCgK809ACuLqQwPXl3YMlz6_zd9JN1XcYuOjpBkU1LFaxnuuKFXB5Y/exec"; 
+      
       const chatDisplay = document.getElementById("chat-display" );
       const inputField = document.getElementById("input-field");
       const sendButton = document.getElementById("send-button");
@@ -56,10 +58,9 @@
         fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
           .then(response => {
             if (!response.ok) { throw new Error(`Erro de rede: ${response.statusText}`); }
-            return response.json(); // MUDANÇA IMPORTANTE: AGORA ESPERAMOS JSON
+            return response.json();
           })
           .then(result => {
-            // AGORA INTERPRETAMOS O RESULTADO JSON
             let botResponseText = '';
             if (result.status === "success") {
               botResponseText = 'Encontrei os seguintes itens:\n\n';
@@ -70,7 +71,7 @@
                 botResponseText += '---\n';
               });
             } else {
-              botResponseText = result.message; // Usa a mensagem de "não encontrado" ou de erro do backend
+              botResponseText = result.message;
             }
             appendMessage(botResponseText, "bot-message");
           })
@@ -87,6 +88,8 @@
         const messageDiv = document.createElement("div");
         messageDiv.className = `message ${className}`;
         const p = document.createElement("p");
+        // CORREÇÃO: Substituindo a quebra de linha por   
+ para formatação HTML
         p.innerHTML = text.replace(/\n/g, '  
 ').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         messageDiv.appendChild(p);
