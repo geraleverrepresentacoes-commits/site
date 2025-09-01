@@ -22,6 +22,8 @@
     .bot-message p { background: #E9E9EB; color: #333; white-space: pre-wrap; border-bottom-left-radius: 4px; }
     .loading-indicator { text-align: center; color: #999; font-style: italic; }
   </style>
+  <!-- Corrige aviso do favicon -->
+  <link rel="icon" href="data:,">
 </head>
 <body>
   <div id="chat-container">
@@ -37,14 +39,19 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz37rsJnrtaZTcCgK809ACuLqQwPXl3YMlz6_zd9JN1XcYuOjpBkU1LFaxnuuKFXB5Y/exec"; 
-      const chatDisplay = document.getElementById("chat-display" );
+      const chatDisplay = document.getElementById("chat-display");
       const inputField = document.getElementById("input-field");
       const sendButton = document.getElementById("send-button");
 
       appendMessage("Olá! Como posso ajudar a encontrar informações sobre nossos produtos?", "bot-message");
 
       sendButton.addEventListener("click", sendMessage);
-      inputField.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); sendMessage(); } });
+      inputField.addEventListener("keypress", (e) => { 
+        if (e.key === "Enter") { 
+          e.preventDefault(); 
+          sendMessage(); 
+        } 
+      });
 
       function sendMessage() {
         const query = inputField.value.trim();
@@ -79,6 +86,7 @@
           })
           .finally(() => { setLoading(false); });
       }
+
       function appendMessage(text, className) {
         const indicator = document.getElementById("loading");
         if(indicator) indicator.remove();
@@ -86,15 +94,17 @@
         const messageDiv = document.createElement("div");
         messageDiv.className = `message ${className}`;
         const p = document.createElement("p");
-        
-        // A LINHA CORRIGIDA BASEADA NA SUA OBSERVAÇÃO
-        p.innerHTML = text.replace(/\n/g, '  
-').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
+
+        // ✅ Correção aplicada aqui
+        p.innerHTML = text
+          .replace(/\n/g, '<br>')
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
         messageDiv.appendChild(p);
         chatDisplay.appendChild(messageDiv);
         chatDisplay.scrollTop = chatDisplay.scrollHeight;
       }
+
       function setLoading(isLoading) {
         sendButton.disabled = isLoading;
         inputField.disabled = isLoading;
