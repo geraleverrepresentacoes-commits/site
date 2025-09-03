@@ -22,7 +22,6 @@
     .bot-message p { background: #E9E9EB; color: #333; white-space: pre-wrap; border-bottom-left-radius: 4px; }
     .loading-indicator { text-align: center; color: #999; font-style: italic; }
   </style>
-  <!-- Corrige aviso do favicon -->
   <link rel="icon" href="data:,">
 </head>
 <body>
@@ -38,7 +37,7 @@
   </div>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxN24BWP3KyDwUQTpsp8UldRGZfxusnrgDlZ9WP_nPeLJE0-51E0rNiekEpBLX0P1rx/exec"; 
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysn-imCwh0poa7IoLcb4qXyT2GwIRiaDeMFJ4zv-LkbKRP75BSpqnGrguvZz59rcs8/exec"; 
       const chatDisplay = document.getElementById("chat-display");
       const inputField = document.getElementById("input-field");
       const sendButton = document.getElementById("send-button");
@@ -67,17 +66,29 @@
           })
           .then(result => {
             let botResponseText = '';
-            if (result.status === "success") {
-              botResponseText = 'Encontrei os seguintes itens:\n\n';
-              result.data.forEach(item => {
-                botResponseText += `Produto: **${item.nome}**\n`;
-                if (item.descricao) botResponseText += `Descrição: ${item.descricao}\n`;
-                if (item.preco) botResponseText += `Preço: R$ ${item.preco}\n`;
-                botResponseText += '---\n';
-              });
+
+            // ✅ Nova lógica
+            if (result.status === "success" || result.status === "success_internal" || result.status === "success_external") {
+              botResponseText = '';
+
+              if (result.source === "firestore") {
+                botResponseText = 'Encontrei os seguintes itens no nosso catálogo:\n\n';
+                result.data.forEach(item => {
+                  botResponseText += `Produto: **${item.nome}**\n`;
+                  if (item.descricao) botResponseText += `Descrição: ${item.descricao}\n`;
+                  if (item.preco) botResponseText += `Preço: R$ ${item.preco}\n`;
+                  botResponseText += '---\n';
+                });
+              } else if (result.source === "google") {
+                botResponseText = 'Não encontrei nada no catálogo, mas achei no Google:\n\n';
+                result.data.forEach(item => {
+                  botResponseText += `🔗 <a href="${item.link}" target="_blank">${item.title}</a>\n${item.snippet}\n---\n`;
+                });
+              }
             } else {
-              botResponseText = result.message;
+              botResponseText = result.message || "Nenhum resultado encontrado.";
             }
+
             appendMessage(botResponseText, "bot-message");
           })
           .catch(error => {
@@ -95,7 +106,6 @@
         messageDiv.className = `message ${className}`;
         const p = document.createElement("p");
 
-        // ✅ Correção aplicada aqui
         p.innerHTML = text
           .replace(/\n/g, '<br>')
           .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
