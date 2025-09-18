@@ -3,188 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assistente de Busca - Ever Representações</title>
+  <title>Assistente de Busca - Representações</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
-      background-color: #f8f9fa; /* Cor de fundo levemente cinza */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      background-color: #ffffff; /* Fundo branco */
     }
 
-    /* Novo Menu Superior */
+    /* Menu Superior Simples */
     #nav-bar {
-      background-color: #f8f9fa;
-      width: 100%;
-      padding: 15px 30px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      box-sizing: border-box;
-    }
-    #nav-bar .logo {
-      font-weight: bold;
-      font-size: 1.4em;
-      color: #333;
+      justify-content: center;
+      padding: 20px;
+      border-bottom: 1px solid #eee;
     }
     #nav-bar ul {
       list-style: none;
       margin: 0;
       padding: 0;
       display: flex;
-      align-items: center;
-      gap: 25px;
+      gap: 30px;
     }
     #nav-bar a {
-      color: #555;
+      color: #333;
       text-decoration: none;
       font-weight: 500;
-      font-size: 1em;
-      transition: color 0.2s;
     }
     #nav-bar a:hover {
-      color: #007BFF;
-    }
-    #nav-bar .search-icon {
-      font-size: 1.2em;
-      cursor: pointer;
+      text-decoration: underline;
     }
 
-    /* Container principal */
-    #chat-container {
+    /* Banner de Busca Preto */
+    .search-banner {
+      background-color: #000000;
+      padding: 40px 20px;
+      text-align: center;
       width: 100%;
-      max-width: 800px; /* Aumentado para melhor visualização dos resultados */
-      margin: 20px;
-      background: transparent; /* Fundo transparente */
-      display: flex;
-      flex-direction: column;
-      height: auto; /* Altura automática */
+      box-sizing: border-box;
+    }
+    .search-banner .logo {
+      max-width: 180px;
+      margin-bottom: 30px;
     }
 
-    #chat-display {
-      padding: 15px;
-      overflow-y: auto;
-    }
-
-    /* Nova Barra de Busca */
+    /* Barra de Busca (Layout da Imagem) */
     #input-container {
       display: flex;
-      padding: 15px;
-      background-color: #fff;
-      border-radius: 50px; /* Bordas totalmente arredondadas */
-      border: 1px solid #dfe1e5;
-      margin: 20px auto;
-      width: 90%;
       max-width: 600px;
-      box-shadow: 0 1px 6px rgba(32,33,36,0.1);
-      transition: box-shadow 0.2s;
-    }
-    #input-container:hover {
-        box-shadow: 0 2px 8px rgba(32,33,36,0.15);
+      margin: 0 auto;
+      background-color: #f1f1f1; /* Fundo cinza claro */
+      border-radius: 30px;
+      padding: 5px;
+      border: 1px solid #555;
     }
     #input-field {
       flex-grow: 1;
       border: none;
       background: transparent;
-      padding: 0 15px;
-      font-size: 1.1em;
-      outline: none; /* Remove a borda ao focar */
+      padding: 10px 20px;
+      font-size: 1em;
+      color: #333;
+      outline: none;
+    }
+    #input-field::placeholder {
+      color: #c53030; /* Placeholder vermelho */
+      font-weight: 500;
     }
     #send-button {
-      background: #007BFF;
-      color: white;
+      background: #fff;
       border: none;
       border-radius: 50%;
-      width: 48px;
-      height: 48px;
+      width: 45px;
+      height: 45px;
       cursor: pointer;
-      font-size: 1.8em; /* Ícone maior */
+      font-size: 1.2em;
+      color: #555;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background-color 0.2s;
-    }
-    #send-button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
     }
 
-    /* Mensagens do Chat */
-    .message { margin-bottom: 15px; display: flex; flex-direction: column; }
-    .user-message { align-items: flex-end; }
-    .bot-message { align-items: flex-start; }
-    .message > p { /* Mensagem de texto simples */
-      display: inline-block;
-      padding: 12px 18px;
-      border-radius: 22px;
-      max-width: 85%;
-      line-height: 1.5;
-      word-wrap: break-word;
-    }
-    .user-message > p {
-      background: #007BFF;
-      color: white;
-      border-bottom-right-radius: 6px;
-    }
-    .bot-message > p {
-      background: #E9E9EB;
-      color: #333;
-      border-bottom-left-radius: 6px;
+    /* Container dos Resultados */
+    #results-container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
     .loading-indicator {
       text-align: center;
       color: #999;
       font-style: italic;
-      padding: 10px;
+      padding: 20px;
     }
 
-    /* Novo Layout de Resultados (Estilo Google) */
+    /* Layout de Resultados (Estilo Google) */
     .search-results {
       display: flex;
       flex-direction: column;
-      gap: 25px; /* Espaço maior entre os resultados */
-      width: 100%;
-      margin-top: 20px;
+      gap: 25px;
     }
     .result-item {
       display: flex;
-      background: transparent; /* Sem fundo de item */
-      padding: 10px 0;
-      border-bottom: 1px solid #ebebeb; /* Linha separadora */
-      align-items: flex-start;
       justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ebebeb;
     }
     .result-item:last-child {
-        border-bottom: none;
+      border-bottom: none;
     }
     .result-info {
-        flex-grow: 1;
+      flex-grow: 1;
     }
     .result-info h3 {
       margin: 0 0 4px 0;
-      font-size: 1.4em; /* Título maior */
+      font-size: 1.3em;
       font-weight: 500;
-      color: #1a0dab; /* Cor de link do Google */
+      color: #1a0dab;
     }
     .result-info a {
       display: block;
-      color: #006621; /* Cor de URL do Google */
-      font-size: 1em;
+      color: #006621;
+      font-size: 0.9em;
       margin-bottom: 8px;
-      word-break: break-all;
       text-decoration: none;
     }
     .result-info a:hover {
-        text-decoration: underline;
+      text-decoration: underline;
     }
     .result-info p {
       margin: 0;
-      font-size: 1em;
-      color: #4d5156; /* Cor do texto de descrição */
+      font-size: 0.95em;
+      color: #4d5156;
       line-height: 1.5;
     }
     .result-image img {
@@ -195,189 +146,120 @@
       margin-left: 20px;
       border: 1px solid #ebebeb;
     }
-    
-    /* Responsividade para telas menores */
-    @media (max-width: 768px) {
-      #nav-bar {
-        flex-direction: column;
-        gap: 10px;
-        padding: 15px;
-      }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
       .result-item {
-        flex-direction: column-reverse; /* Imagem em cima, texto embaixo */
-        align-items: flex-start;
+        flex-direction: column-reverse;
       }
       .result-image img {
+        width: 100%;
+        height: auto;
         margin-left: 0;
         margin-bottom: 15px;
-        width: 100%;
-        height: 150px; /* Altura maior em mobile */
       }
-      .result-info h3 { font-size: 1.2em; }
-      .result-info p, .result-info a { font-size: 0.95em; }
     }
   </style>
-  <link rel="icon" href="data:,">
 </head>
 <body>
-  <!-- Menu superior -->
+
   <div id="nav-bar">
-    <div class="logo">Ever Representações</div>
     <ul>
-      <li><a href="#">Página inicial</a></li>
+      <li><a href="#">Pagina inicial</a></li>
       <li><a href="#">Produtos</a></li>
-      <li><a href="#">Serviços</a></li>
+      <li><a href="#">Servicos</a></li>
       <li><a href="#">Contacto</a></li>
-      <li><a href="#" class="search-icon">🔍</a></li>
     </ul>
   </div>
 
-  <div id="chat-container">
-    <div id="chat-display">
-      <!-- A mensagem inicial será inserida pelo script -->
-    </div>
-    
+  <div class="search-banner">
+    <img src="URL_DA_SUA_IMAGEM_LOGO" alt="Representações Logo" class="logo">
     <div id="input-container">
-      <input type="text" id="input-field" placeholder="Digite sua busca...">
-      <button id="send-button" title="Enviar">➔</button>
+      <input type="text" id="input-field" placeholder="Digite sua busca">
+      <button id="send-button" title="Buscar">🔍</button>
     </div>
+  </div>
+
+  <div id="results-container">
+    <!-- Resultados da busca aparecerão aqui -->
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysn-imCwh0poa7IoLcb4qXyT2GwIRiaDeMFJ4zv-LkbKRP75BSpqnGrguvZz59rcs8/exec"; 
-      const chatDisplay = document.getElementById("chat-display" );
+      const resultsContainer = document.getElementById("results-container" );
       const inputField = document.getElementById("input-field");
       const sendButton = document.getElementById("send-button");
 
-      // Mensagem inicial com o novo estilo
-      appendMessage("Olá! Como posso ajudar a encontrar informações sobre nossos produtos?", "bot-message");
-
-      sendButton.addEventListener("click", sendMessage);
+      sendButton.addEventListener("click", performSearch);
       inputField.addEventListener("keypress", (e) => { 
         if (e.key === "Enter") { 
           e.preventDefault(); 
-          sendMessage(); 
+          performSearch(); 
         } 
       });
 
-      function sendMessage() {
+      function performSearch() {
         const query = inputField.value.trim();
         if (!query) return;
-        appendMessage(query, "user-message");
-        inputField.value = "";
+        
         setLoading(true);
         
-        // Simulação de uma resposta da API para teste do layout
-        const mockResult = {
-            status: "success",
-            source: "firestore",
-            data: [
-                {
-                    nome: "Casa dos Carimbos",
-                    link: "https://wa.me/123456789",
-                    descricao: "Carimbos Trodat, com almofada e personalizados. A melhor qualidade para sua empresa.",
-                    imagem: "https://via.placeholder.com/100"
-                },
-                {
-                    nome: "Gráfica Benfica",
-                    link: "https://wa.me/987654321",
-                    descricao: "Impressão de alta qualidade, cartões de visita, flyers e mais. Soluções gráficas completas.",
-                    imagem: "https://via.placeholder.com/100"
-                },
-                {
-                    nome: "GJ Serviços",
-                    link: "https://gj-servicos.com/catalogo",
-                    descricao: "Serviços de manutenção e instalação. Equipe qualificada e atendimento rápido.",
-                    imagem: "https://via.placeholder.com/100"
-                }
-            ]
-        };
-        
-        // Atraso para simular a chamada de rede
-        setTimeout(( ) => {
-            handleResponse(mockResult);
-            setLoading(false);
-        }, 1500);
-
-        /* 
-        // CÓDIGO ORIGINAL PARA CHAMADA REAL (descomente para usar)
+        // Chamada REAL para a sua API (busca está ATIVA)
         fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
           .then(response => {
             if (!response.ok) { throw new Error(`Erro de rede: ${response.statusText}`); }
             return response.json();
           })
-          .then(handleResponse)
+          .then(displayResults)
           .catch(error => {
             console.error('Erro:', error);
-            appendMessage("Desculpe, ocorreu um erro de comunicação.", "bot-message");
+            displayError("Desculpe, ocorreu um erro de comunicação.");
           })
-          .finally(() => { setLoading(false); });
-        */
+          .finally(() => {
+            setLoading(false);
+          });
       }
 
-      function handleResponse(result) {
-        let botResponseHTML = '';
+      function displayResults(result) {
+        let htmlContent = '';
 
-        if (result.status === "success" && result.source === "firestore") {
-          botResponseHTML = '<div class="search-results">';
+        if (result.status.startsWith("success") && result.data && result.data.length > 0) {
+          htmlContent = '<div class="search-results">';
           result.data.forEach(item => {
-            botResponseHTML += `
+            htmlContent += `
               <div class="result-item">
                 <div class="result-info">
-                  <h3>${item.nome}</h3>
-                  <a href="${item.link || '#'}" target="_blank">${item.link || 'Ver catálogo/WhatsApp'}</a>
-                  <p>${item.descricao || 'Descrição não disponível.'}</p>
+                  <h3>${item.nome || item.title}</h3>
+                  <a href="${item.link || '#'}" target="_blank">${item.link || 'Link não disponível'}</a>
+                  <p>${item.descricao || item.snippet || 'Descrição não disponível.'}</p>
                 </div>
                 <div class="result-image">
-                  <img src="${item.imagem || 'https://via.placeholder.com/100'}" alt="${item.nome}">
+                  <img src="${item.imagem || 'https://via.placeholder.com/100'}" alt="${item.nome || item.title}">
                 </div>
               </div>
             `;
           } );
-          botResponseHTML += '</div>';
+          htmlContent += '</div>';
         } else {
-          botResponseHTML = `<p>${result.message || "Nenhum resultado encontrado."}</p>`;
+          htmlContent = `<p>${result.message || "Nenhum resultado encontrado para sua busca."}</p>`;
         }
-
-        appendMessage(botResponseHTML, "bot-message", true);
+        resultsContainer.innerHTML = htmlContent;
       }
-
-      function appendMessage(text, className, isHTML=false) {
-        const indicator = document.getElementById("loading");
-        if(indicator) indicator.remove();
-
-        const messageDiv = document.createElement("div");
-        messageDiv.className = `message ${className}`;
-        
-        if (isHTML) {
-          messageDiv.innerHTML = text;
-        } else {
-          const p = document.createElement("p");
-          p.innerHTML = text
-            .replace(/\n/g, '  
-')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-          messageDiv.appendChild(p);
-        }
-
-        chatDisplay.appendChild(messageDiv);
-        chatDisplay.scrollTop = chatDisplay.scrollHeight;
+      
+      function displayError(message) {
+          resultsContainer.innerHTML = `<p style="text-align: center; color: red;">${message}</p>`;
       }
 
       function setLoading(isLoading) {
         sendButton.disabled = isLoading;
         inputField.disabled = isLoading;
         if (isLoading) {
-          const indicator = document.createElement("div");
-          indicator.id = "loading";
-          indicator.className = "loading-indicator";
-          indicator.textContent = "Buscando...";
-          chatDisplay.appendChild(indicator);
-          chatDisplay.scrollTop = chatDisplay.scrollHeight;
+          resultsContainer.innerHTML = `<div class="loading-indicator">Buscando...</div>`;
         }
       }
     });
   </script>
+
 </body>
 </html>
