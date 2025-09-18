@@ -8,30 +8,7 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
-      background-color: #ffffff; /* Fundo branco */
-    }
-
-    /* Menu Superior Simples */
-    #nav-bar {
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-      border-bottom: 1px solid #eee;
-    }
-    #nav-bar ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      gap: 30px;
-    }
-    #nav-bar a {
-      color: #333;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    #nav-bar a:hover {
-      text-decoration: underline;
+      background-color: #ffffff;
     }
 
     /* Banner de Busca Preto */
@@ -47,41 +24,50 @@
       margin-bottom: 30px;
     }
 
-    /* Barra de Busca (Layout da Imagem) */
+    /* --- BARRA DE BUSCA ATUALIZADA --- */
     #input-container {
       display: flex;
-      max-width: 600px;
+      align-items: center;
+      justify-content: center;
+      max-width: 650px;
       margin: 0 auto;
-      background-color: #f1f1f1; /* Fundo cinza claro */
-      border-radius: 30px;
-      padding: 5px;
-      border: 1px solid #555;
+      position: relative; /* Necessário para posicionar o botão */
     }
     #input-field {
-      flex-grow: 1;
-      border: none;
-      background: transparent;
-      padding: 10px 20px;
+      width: 100%;
+      border-radius: 25px; /* Cantos bem arredondados */
+      border: 1px solid #444;
+      background-color: #f1f1f1;
+      padding: 15px 60px 15px 20px; /* Espaço para o botão à direita */
       font-size: 1em;
       color: #333;
       outline: none;
+      text-align: center; /* Placeholder centralizado */
     }
     #input-field::placeholder {
       color: #c53030; /* Placeholder vermelho */
       font-weight: 500;
     }
     #send-button {
-      background: #fff;
+      position: absolute; /* Posicionamento exato */
+      right: 10px; /* Distância da borda direita */
+      top: 50%;
+      transform: translateY(-50%);
+      background: #555; /* Fundo cinza escuro */
       border: none;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
+      border-radius: 50%; /* Círculo perfeito */
+      width: 40px;
+      height: 40px;
       cursor: pointer;
       font-size: 1.2em;
-      color: #555;
+      color: #fff; /* Ícone branco */
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background-color 0.2s;
+    }
+    #send-button:hover {
+        background-color: #777;
     }
 
     /* Container dos Resultados */
@@ -110,51 +96,31 @@
       padding-bottom: 20px;
       border-bottom: 1px solid #ebebeb;
     }
-    .result-item:last-child {
-      border-bottom: none;
-    }
-    .result-info {
-      flex-grow: 1;
-    }
-    .result-info h3 {
-      margin: 0 0 4px 0;
-      font-size: 1.3em;
-      font-weight: 500;
-      color: #1a0dab;
-    }
-    .result-info a {
-      display: block;
-      color: #006621;
-      font-size: 0.9em;
-      margin-bottom: 8px;
-      text-decoration: none;
-    }
-    .result-info a:hover {
-      text-decoration: underline;
-    }
-    .result-info p {
-      margin: 0;
-      font-size: 0.95em;
-      color: #4d5156;
-      line-height: 1.5;
-    }
-    .result-image img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-left: 20px;
-      border: 1px solid #ebebeb;
-    }
+    .result-item:last-child { border-bottom: none; }
+    .result-info { flex-grow: 1; }
+    .result-info h3 { margin: 0 0 4px 0; font-size: 1.3em; font-weight: 500; color: #1a0dab; }
+    .result-info a { display: block; color: #006621; font-size: 0.9em; margin-bottom: 8px; text-decoration: none; word-break: break-all; }
+    .result-info a:hover { text-decoration: underline; }
+    .result-info p { margin: 0; font-size: 0.95em; color: #4d5156; line-height: 1.5; }
+    .result-image img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-left: 20px; border: 1px solid #ebebeb; }
 
-    /* Responsividade */
-    @media (max-width: 600px) {
+    /* --- OTIMIZAÇÃO MOBILE CRUCIAL --- */
+    @media (max-width: 768px) {
+      .search-banner { padding: 30px 15px; }
+      
+      #results-container {
+        /* Regra para garantir que os resultados sejam roláveis e não ocupem a tela toda */
+        max-height: 60vh;   /* Ocupa no máximo 60% da altura da tela */
+        overflow-y: auto;   /* Adiciona scroll se o conteúdo passar da altura */
+        -webkit-overflow-scrolling: touch; /* Melhora a experiência de rolagem no iOS */
+      }
+
       .result-item {
-        flex-direction: column-reverse;
+        flex-direction: column-reverse; /* Imagem fica em cima do texto */
       }
       .result-image img {
         width: 100%;
-        height: auto;
+        height: 180px; /* Imagem maior e responsiva */
         margin-left: 0;
         margin-bottom: 15px;
       }
@@ -163,17 +129,8 @@
 </head>
 <body>
 
-  <div id="nav-bar">
-    <ul>
-      <li><a href="#">Pagina inicial</a></li>
-      <li><a href="#">Produtos</a></li>
-      <li><a href="#">Servicos</a></li>
-      <li><a href="#">Contacto</a></li>
-    </ul>
-  </div>
-
   <div class="search-banner">
-    <img src="URL_DA_SUA_IMAGEM_LOGO" alt="Representações Logo" class="logo">
+    <img src="https://i.imgur.com/your-logo.png" alt="Representações Logo" class="logo"> <!-- SUBSTITUA PELA URL DO SEU LOGO -->
     <div id="input-container">
       <input type="text" id="input-field" placeholder="Digite sua busca">
       <button id="send-button" title="Buscar">🔍</button>
@@ -185,7 +142,7 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", ( ) => {
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysn-imCwh0poa7IoLcb4qXyT2GwIRiaDeMFJ4zv-LkbKRP75BSpqnGrguvZz59rcs8/exec"; 
       const resultsContainer = document.getElementById("results-container" );
       const inputField = document.getElementById("input-field");
@@ -193,19 +150,14 @@
 
       sendButton.addEventListener("click", performSearch);
       inputField.addEventListener("keypress", (e) => { 
-        if (e.key === "Enter") { 
-          e.preventDefault(); 
-          performSearch(); 
-        } 
+        if (e.key === "Enter") { e.preventDefault(); performSearch(); } 
       });
 
       function performSearch() {
         const query = inputField.value.trim();
         if (!query) return;
-        
         setLoading(true);
         
-        // Chamada REAL para a sua API (busca está ATIVA)
         fetch(`${SCRIPT_URL}?query=${encodeURIComponent(query)}`)
           .then(response => {
             if (!response.ok) { throw new Error(`Erro de rede: ${response.statusText}`); }
@@ -216,14 +168,11 @@
             console.error('Erro:', error);
             displayError("Desculpe, ocorreu um erro de comunicação.");
           })
-          .finally(() => {
-            setLoading(false);
-          });
+          .finally(() => { setLoading(false); });
       }
 
       function displayResults(result) {
         let htmlContent = '';
-
         if (result.status.startsWith("success") && result.data && result.data.length > 0) {
           htmlContent = '<div class="search-results">';
           result.data.forEach(item => {
@@ -242,7 +191,7 @@
           } );
           htmlContent += '</div>';
         } else {
-          htmlContent = `<p>${result.message || "Nenhum resultado encontrado para sua busca."}</p>`;
+          htmlContent = `<p style="text-align:center;">${result.message || "Nenhum resultado encontrado."}</p>`;
         }
         resultsContainer.innerHTML = htmlContent;
       }
