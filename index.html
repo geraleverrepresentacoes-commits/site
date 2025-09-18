@@ -5,26 +5,203 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Assistente de Busca</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    #chat-container { width: 100%; max-width: 600px; margin: 10px; border: 1px solid #ddd; border-radius: 12px; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.15); display: flex; flex-direction: column; height: 85vh; }
-    #chat-header { background: #007BFF; color: white; padding: 15px; border-top-left-radius: 12px; border-top-right-radius: 12px; text-align: center; }
-    #chat-header h2 { margin: 0; font-size: 1.2em; }
-    #chat-display { flex-grow: 1; padding: 15px; overflow-y: auto; }
-    #input-container { display: flex; padding: 10px; border-top: 1px solid #ddd; background-color: #f9f9f9; }
-    #input-field { flex-grow: 1; border: 1px solid #ccc; border-radius: 20px; padding: 10px 15px; font-size: 1em; resize: none; }
-    #send-button { background: #007BFF; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; margin-left: 10px; cursor: pointer; font-size: 1.5em; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
-    #send-button:disabled { background: #999; cursor: not-allowed; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    /* Menu Superior */
+    #nav-bar {
+      background-color: #007BFF;
+      text-align: center;
+      padding: 8px 0;
+      width: 100%;
+    }
+    #nav-bar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    #nav-bar li {
+      margin: 0 15px;
+    }
+    #nav-bar a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    #nav-bar a:hover {
+      text-decoration: underline;
+    }
+
+    /* Container principal */
+    #chat-container {
+      width: 100%;
+      max-width: 700px;
+      margin: 10px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      height: 85vh;
+    }
+
+    #chat-header {
+      background: #007BFF;
+      color: white;
+      padding: 15px;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      text-align: center;
+    }
+    #chat-header h2 {
+      margin: 0;
+      font-size: 1.2em;
+    }
+
+    #chat-display {
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+
+    #input-container {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
+    #input-field {
+      flex-grow: 1;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 10px 15px;
+      font-size: 1em;
+      resize: none;
+    }
+    #send-button {
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      margin-left: 10px;
+      cursor: pointer;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+    #send-button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+
     .message { margin-bottom: 15px; display: flex; }
     .user-message { justify-content: flex-end; }
     .bot-message { justify-content: flex-start; }
-    .message p { display: inline-block; padding: 10px 15px; border-radius: 18px; max-width: 85%; line-height: 1.4; word-wrap: break-word; }
-    .user-message p { background: #007BFF; color: white; border-bottom-right-radius: 4px; }
-    .bot-message p { background: #E9E9EB; color: #333; white-space: pre-wrap; border-bottom-left-radius: 4px; }
-    .loading-indicator { text-align: center; color: #999; font-style: italic; }
+    .message p {
+      display: inline-block;
+      padding: 10px 15px;
+      border-radius: 18px;
+      max-width: 85%;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .user-message p {
+      background: #007BFF;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    .bot-message p {
+      background: #E9E9EB;
+      color: #333;
+      white-space: pre-wrap;
+      border-bottom-left-radius: 4px;
+    }
+    .loading-indicator {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+    }
+
+    /* Resultados estilo Google */
+    .search-results {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+    }
+    .result-item {
+      display: flex;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      align-items: flex-start;
+    }
+    .result-image img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-right: 15px;
+    }
+    .result-info h3 {
+      margin: 0;
+      font-size: 1.1em;
+      color: #007BFF;
+    }
+    .result-info a {
+      display: block;
+      color: #555;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+      word-break: break-all;
+    }
+    .result-info p {
+      margin: 0;
+      font-size: 0.9em;
+      color: #333;
+    }
+    @media (max-width: 600px) {
+      .result-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .result-image img {
+        margin: 0 0 10px 0;
+      }
+    }
   </style>
   <link rel="icon" href="data:,">
 </head>
 <body>
+  <!-- Menu superior -->
+  <div id="nav-bar">
+    <ul>
+      <li><a href="#">Página inicial</a></li>
+      <li><a href="#">Produtos</a></li>
+      <li><a href="#">Serviços</a></li>
+      <li><a href="#">Contacto</a></li>
+    </ul>
+  </div>
+
   <div id="chat-container">
     <div id="chat-header">
       <h2>Assistente de Busca</h2>
@@ -35,6 +212,7 @@
       <button id="send-button" title="Enviar">➔</button>
     </div>
   </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysn-imCwh0poa7IoLcb4qXyT2GwIRiaDeMFJ4zv-LkbKRP75BSpqnGrguvZz59rcs8/exec"; 
@@ -65,31 +243,46 @@
             return response.json();
           })
           .then(result => {
-            let botResponseText = '';
+            let botResponseHTML = '';
 
-            // ✅ Nova lógica
+            // Resultados no layout estilo Google
             if (result.status === "success" || result.status === "success_internal" || result.status === "success_external") {
-              botResponseText = '';
-
               if (result.source === "firestore") {
-                botResponseText = 'Encontrei os seguintes itens no nosso catálogo:\n\n';
+                botResponseHTML = '<div class="search-results">';
                 result.data.forEach(item => {
-                  botResponseText += `Produto: **${item.nome}**\n`;
-                  if (item.descricao) botResponseText += `Descrição: ${item.descricao}\n`;
-                  if (item.preco) botResponseText += `Preço: R$ ${item.preco}\n`;
-                  botResponseText += '---\n';
+                  botResponseHTML += `
+                    <div class="result-item">
+                      <div class="result-image">
+                        <img src="${item.imagem || 'https://via.placeholder.com/80'}" alt="${item.nome}">
+                      </div>
+                      <div class="result-info">
+                        <h3>${item.nome}</h3>
+                        <a href="${item.link || '#'}" target="_blank">${item.link || 'Ver catálogo/WhatsApp'}</a>
+                        <p>${item.descricao || ''}</p>
+                      </div>
+                    </div>
+                  `;
                 });
+                botResponseHTML += '</div>';
               } else if (result.source === "google") {
-                botResponseText = 'Não encontrei nada no catálogo, mas achei no Google:\n\n';
+                botResponseHTML = '<div class="search-results">';
                 result.data.forEach(item => {
-                  botResponseText += `🔗 <a href="${item.link}" target="_blank">${item.title}</a>\n${item.snippet}\n---\n`;
+                  botResponseHTML += `
+                    <div class="result-item">
+                      <div class="result-info">
+                        <h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                        <p>${item.snippet}</p>
+                      </div>
+                    </div>
+                  `;
                 });
+                botResponseHTML += '</div>';
               }
             } else {
-              botResponseText = result.message || "Nenhum resultado encontrado.";
+              botResponseHTML = `<p>${result.message || "Nenhum resultado encontrado."}</p>`;
             }
 
-            appendMessage(botResponseText, "bot-message");
+            appendMessage(botResponseHTML, "bot-message", true);
           })
           .catch(error => {
             console.error('Erro:', error);
@@ -98,7 +291,7 @@
           .finally(() => { setLoading(false); });
       }
 
-      function appendMessage(text, className) {
+      function appendMessage(text, className, isHTML=false) {
         const indicator = document.getElementById("loading");
         if(indicator) indicator.remove();
 
@@ -106,9 +299,13 @@
         messageDiv.className = `message ${className}`;
         const p = document.createElement("p");
 
-        p.innerHTML = text
-          .replace(/\n/g, '<br>')
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        if (isHTML) {
+          p.innerHTML = text;
+        } else {
+          p.innerHTML = text
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
 
         messageDiv.appendChild(p);
         chatDisplay.appendChild(messageDiv);
